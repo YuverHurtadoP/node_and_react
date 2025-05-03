@@ -1,4 +1,5 @@
-const express = require('express');
+//const express = require('express'); //CjS Common js
+import express from 'express';//EMS Ecmascript module
  const app = express();
 
 
@@ -8,6 +9,7 @@ const express = require('express');
  app.get('/farewell',(req, res)=>{
     res.send('bye, thanks you');
  })
- app.listen(4000 ,()=>{
+ const port = process.env.PORT||4000;
+ app.listen(port ,()=>{
     console.log("run server");
  })
