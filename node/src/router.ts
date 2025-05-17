@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { creteUser } from "./handlers";
+import { createUser } from "./handlers";
 
 const router = Router();
  
- router.post('/auth/register', creteUser )
+ router.post('/auth/register', createUser )
  
  
  export default router;
