@@ -44,3 +44,24 @@ export const createUser = async (
    await user.save();
    res.status(201).send("usuario creado.");
  };
+
+ export const login = async (
+   req: Request,
+   res: Response
+ ): Promise<void> => {
+  let error = validationResult(req);
+
+  if (!error.isEmpty()) {
+    res.status(400).json({ error: error.array() });
+    return;
+  }
+     const { email, password } = req.body;
+   const existUser = await User.findOne({ email });
+ 
+   if (!existUser) {
+     res.status(404).json({ error: "El usuario no existe" });
+     return;
+   }
+
+
+ }

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createUser } from "./handlers";
+import { createUser, login } from "./handlers";
 import {body}from "express-validator";
 
 
@@ -11,6 +11,12 @@ const router = Router();
     body('email').isEmail().withMessage("El email no es valido"),
     body('password').isLength({min:4}).withMessage("El password debe contener 4 caracteres minimos"),
     createUser )
+
+router.post('/auth/login',
+    body('email').isEmail().withMessage("El email no es valido"),
+    body('password').notEmpty().withMessage("El password  es obligatorio"),
+   
+   login)
  
  
  export default router;
