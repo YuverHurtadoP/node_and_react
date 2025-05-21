@@ -1,20 +1,14 @@
 import User from "../models/User";
 import { Request, Response } from "express";
-import { hashPassword } from "../utils/auth";
+import { checkPassword, hashPassword } from "../utils/auth";
 import slugify from 'slugify';
-import { validationResult } from "express-validator";
+ 
 
 export const createUser = async (
    req: Request,
    res: Response
  ): Promise<void> => {
-
-  let error = validationResult(req);
-
-  if (!error.isEmpty()) {
-    res.status(400).json({ error: error.array() });
-    return;
-  }
+ 
   
    const { email, password } = req.body;
    const existUser = await User.findOne({ email });
@@ -49,12 +43,7 @@ export const createUser = async (
    req: Request,
    res: Response
  ): Promise<void> => {
-  let error = validationResult(req);
-
-  if (!error.isEmpty()) {
-    res.status(400).json({ error: error.array() });
-    return;
-  }
+ 
      const { email, password } = req.body;
    const existUser = await User.findOne({ email });
  
@@ -63,5 +52,12 @@ export const createUser = async (
      return;
    }
 
+   const isPasswordCorrect = await checkPassword(password, existUser.password);
+   console.log("repuesta",isPasswordCorrect);
+   if (!isPasswordCorrect) {
+     res.status(401).json({ error: "Credenciales incorrecta" });
+     return;
+   }
+   res.send(isPasswordCorrect)
 
  }
