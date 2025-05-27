@@ -7,7 +7,7 @@ export default function AppRouter() {
         <BrowserRouter>
             <Routes>
                 <Route path="/auth/login" element={<LoginComponent />} />
-                <Route path="/auth/registrar" element={<RegistrarUsuario />} />
+                <Route path="/auth/register" element={<RegistrarUsuario />} />
             </Routes>
         </BrowserRouter>
     );
