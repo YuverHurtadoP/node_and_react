@@ -1,6 +1,6 @@
 import './RegistrarUsuario.css';
 
-const RegistrarUsuario = () => {
+const RegistrarUsuarico = () => {
   return (
     <div className="RegistrarUsuario">
       <h1>RegistrarUsuario</h1>
@@ -8,4 +8,4 @@ const RegistrarUsuario = () => {
   );
 };
 
-export default RegistrarUsuario;
+export default RegistrarUsuarico;
