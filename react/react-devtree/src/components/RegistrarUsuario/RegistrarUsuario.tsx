@@ -27,7 +27,7 @@ const RegistrarUsuario = () => {
     <div className="min-vh-100 d-flex flex-column align-items-center">
       <div
         className="p-4 rounded-3 shadow mt-5"
-        style={{ width: "400px", backgroundColor: "#fefffe", color: "black" }}
+        style={{ width: "400px", backgroundColor: "#eef3f7", color: "black" }}
       >
         <h2 className="text-center mb-4">Crear Cuenta</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -38,7 +38,7 @@ const RegistrarUsuario = () => {
             <input
               type="text"
               className="form-control"
-              style={{ backgroundColor: "#eef3f7" }}
+            
               {...register("name", { required: "El nombre es obligatorio" })}
             />
             {typeof errors.name?.message === "string" && (
@@ -51,7 +51,6 @@ const RegistrarUsuario = () => {
               Correo Electrónico
             </label>
             <input
-              style={{ backgroundColor: "#eef3f7" }}
               type="email"
               className="form-control"
               {...register("email", {
@@ -72,7 +71,6 @@ const RegistrarUsuario = () => {
               Contraseña
             </label>
             <input
-              style={{ backgroundColor: "#eef3f7" }}
               type="password"
               className="form-control"
               {...register("password", {
@@ -90,7 +88,6 @@ const RegistrarUsuario = () => {
               Confirmar Contraseña
             </label>
             <input
-              style={{ backgroundColor: "#eef3f7" }}
               type="password"
               className="form-control"
               {...register("confirmPassword", {
