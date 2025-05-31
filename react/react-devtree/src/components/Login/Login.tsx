@@ -9,7 +9,7 @@ const LoginComponent = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     console.log("Email:", email);
-    console.log("Password:", password);
+    console.log("Password:", password)
   };
 
   return (
