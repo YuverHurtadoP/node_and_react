@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import "./RegistrarUsuario.css";
 import type { UserFormData } from "../../models/AuthsModel";
+import AuthService from "../../services/AuthService";
 
 const RegistrarUsuario = () => {
   const {
@@ -10,10 +11,14 @@ const RegistrarUsuario = () => {
     formState: { errors },
     watch,
   } = useForm<UserFormData>();
-
-  const onSubmit = (data: UserFormData) => {
-    console.log("Datos del formulario:", data);
-    console.log("Datos del formulasssrio:", data)
+// Función para manejar el envío del formulario
+  const onSubmit = async (data: UserFormData) => {
+    try {
+      const result = await AuthService.registerUser(data);
+      console.log('Respuesta del servidor:', result);
+    } catch (error) {
+      console.error('Error al registrar usuario:', error);
+    }
   };
 
   const password = watch("password");
