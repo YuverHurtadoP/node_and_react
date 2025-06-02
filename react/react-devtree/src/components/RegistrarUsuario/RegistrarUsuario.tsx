@@ -1,24 +1,19 @@
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import "./RegistrarUsuario.css";
+import type { UserFormData } from "../../models/AuthsModel";
 
 const RegistrarUsuario = () => {
-  interface FormData {
-    name: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-  }
-
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm<FormData>();
+  } = useForm<UserFormData>();
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: UserFormData) => {
     console.log("Datos del formulario:", data);
+    console.log("Datos del formulasssrio:", data)
   };
 
   const password = watch("password");
@@ -38,11 +33,24 @@ const RegistrarUsuario = () => {
             <input
               type="text"
               className="form-control"
-            
               {...register("name", { required: "El nombre es obligatorio" })}
             />
             {typeof errors.name?.message === "string" && (
               <small className="text-danger">{errors.name.message}</small>
+            )}
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="handle" className="form-label">
+              Handle
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              {...register("handle", { required: "El handle es obligatorio" })}
+            />
+            {typeof errors.handle?.message === "string" && (
+              <small className="text-danger">{errors.handle.message}</small>
             )}
           </div>
 
