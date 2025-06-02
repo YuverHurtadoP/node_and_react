@@ -20,7 +20,8 @@ const RegistrarUsuario = () => {
       toast.success("Usuario registrado exitosamente");
       console.log("Respuesta del servidor:", result);
     } catch (error) {
-      toast.error("Error al registrar usuario. Por favor, inténtalo de nuevo.");
+      
+      toast.error(error?.response.data.error);
       
       console.error("Error al registrar usuario:", error);
     }
