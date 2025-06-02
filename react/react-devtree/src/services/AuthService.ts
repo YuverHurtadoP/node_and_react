@@ -2,11 +2,12 @@ import axios from "axios";
 import type { UserFormData } from "../models/AuthsModel";
 
 // Definir la URL base como constante
-const BASE_URL = "http://localhost:4000";
-
+const BASE_URL = import.meta.env.VITE_API_URL;
+ 
 class AuthService {
   async registerUser(data: UserFormData) {
     try {
+      
       const response = await axios.post(`${BASE_URL}/auth/register`, data);
       return response.data; // Devuelve la respuesta del servidor
     } catch (error) {
@@ -17,9 +18,11 @@ class AuthService {
 
   async loginUser(data: { email: string; password: string }) {
     try {
+     
       const response = await axios.post(`${BASE_URL}/auth/login`, data);
       return response.data; // Devuelve la respuesta del servidor
     } catch (error) {
+      
       console.error("Error en loginUser:", error);
       throw error;
     }

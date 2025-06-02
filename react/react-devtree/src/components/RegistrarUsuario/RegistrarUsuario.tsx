@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import "./RegistrarUsuario.css";
 import type { UserFormData } from "../../models/AuthsModel";
 import AuthService from "../../services/AuthService";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RegistrarUsuario = () => {
   const {
@@ -11,13 +13,16 @@ const RegistrarUsuario = () => {
     formState: { errors },
     watch,
   } = useForm<UserFormData>();
-// Función para manejar el envío del formulario
+
   const onSubmit = async (data: UserFormData) => {
     try {
       const result = await AuthService.registerUser(data);
-      console.log('Respuesta del servidor:', result);
+      toast.success("Usuario registrado exitosamente");
+      console.log("Respuesta del servidor:", result);
     } catch (error) {
-      console.error('Error al registrar usuario:', error);
+      toast.error("Error al registrar usuario. Por favor, inténtalo de nuevo.");
+      
+      console.error("Error al registrar usuario:", error);
     }
   };
 
@@ -25,6 +30,7 @@ const RegistrarUsuario = () => {
 
   return (
     <div className="min-vh-100 d-flex flex-column align-items-center">
+      <ToastContainer /> {/* Contenedor de Toast */}
       <div
         className="p-4 rounded-3 shadow mt-5"
         style={{ width: "400px", backgroundColor: "#eef3f7", color: "black" }}
@@ -121,7 +127,6 @@ const RegistrarUsuario = () => {
           </button>
         </form>
 
-        {/* Enlace para iniciar sesión */}
         <div className="text-center mt-3">
           <span>¿Ya tienes cuenta?</span>
           <Link
