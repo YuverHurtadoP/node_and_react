@@ -2,7 +2,7 @@ import User from "../models/User";
 import { Request, Response } from "express";
 import { checkPassword, hashPassword } from "../utils/auth";
 import slugify from 'slugify';
- 
+ import { generateJwt } from "../utils/jwt";
 
 export const createUser = async (
    req: Request,
@@ -58,6 +58,7 @@ export const createUser = async (
      res.status(401).json({ error: "Credenciales incorrecta" });
      return;
    }
-   res.send(isPasswordCorrect)
+   const token = generateJwt(existUser);
+   res.send(token)
 
  }

@@ -16,7 +16,8 @@ const LoginComponent = () => {
     try {
       const response = await AuthService.loginUser({ email, password });
       console.log("Respuesta del servidor:", response);
-       toast.success("Bienvenido");
+     
+      localStorage.setItem("token", response);
       navigate("/dashboard"); // Redirigir al dashboard
     } catch {
        toast.error("Error al iniciar sesión. Por favor, inténtalo de nuevo.");
