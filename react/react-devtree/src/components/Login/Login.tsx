@@ -18,7 +18,7 @@ const LoginComponent = () => {
       console.log("Respuesta del servidor:", response);
      
       localStorage.setItem("token", response);
-      navigate("/dashboard"); // Redirigir al dashboard
+      navigate("/admin");
     } catch {
        toast.error("Error al iniciar sesión. Por favor, inténtalo de nuevo.");
       setError("Credenciales inválidas. Por favor, inténtalo de nuevo.");
