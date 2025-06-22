@@ -17,7 +17,7 @@ const LayoutsAppComponent = () => {
       <header className="w-100 py-3 px-4 d-flex align-items-center justify-content-between border-bottom" style={{ backgroundColor: '#0a0d17' }}>
         <div className="d-flex align-items-center">
           <img  src="/logo.svg" alt="DevTree Logo" style={{ height: '40px' }} />
-          <span className="ms-2 fs-4 fw-bold">DevTree</span>
+          
         </div>
 
         <nav className="d-flex align-items-center gap-4">

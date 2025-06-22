@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { checkPassword, hashPassword } from "../utils/auth";
 import slugify from 'slugify';
  import { generateJwt } from "../utils/jwt";
-
+import Jwt, { decode }   from "jsonwebtoken";
 export const createUser = async (
    req: Request,
    res: Response
@@ -62,3 +62,10 @@ export const createUser = async (
    res.send(token)
 
  }
+export const getUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+      res.send(req.user); 
+     
+};
