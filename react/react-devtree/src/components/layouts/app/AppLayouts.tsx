@@ -1,7 +1,8 @@
+import { useQuery } from '@tanstack/react-query';
 import './AppLayouts.css';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
-
-
+import UserService from "../../../services/UserService";
+import { useEffect } from "react";
 const LayoutsAppComponent = () => {
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -9,6 +10,21 @@ const LayoutsAppComponent = () => {
      navigate("/auth/Login");
     localStorage.removeItem('token');  
   };
+  const { data,isLoading, error, isError} = useQuery({
+    queryFn:() => UserService.getUserByToken(),
+    queryKey: ["user"],
+    retry:1,
+  });
+  console.log(data);
+  console.log(isLoading);
+  console.log(error?.message);
+  console.log(isError); 
+
+  /*useEffect(() => {
+    console.log("Componente montado (equivalente a ngOnInit)");
+
+    
+  }, [])*/
 
   return (
     <div className="bg-custom text-white min-vh-100 w-100 d-flex flex-column">

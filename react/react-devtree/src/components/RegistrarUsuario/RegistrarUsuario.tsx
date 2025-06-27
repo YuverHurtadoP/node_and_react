@@ -21,7 +21,7 @@ const RegistrarUsuario = () => {
       console.log("Respuesta del servidor:", result);
     } catch (error) {
       
-      toast.error(error?.response.data.error);
+      toast.error(error?.response?.data.error);
       
       console.error("Error al registrar usuario:", error);
     }
