@@ -1,30 +1,53 @@
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useUser } from '../../Context/UserContext';
 
 const ProfileComponent = () => {
+  const user = useUser();
+  const [preview, setPreview] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm();
+    setValue,
+  } = useForm({
+    defaultValues: {
+      handle: '',
+      descripcion: '',
+      imagen: null,
+    },
+  });
 
-  const [preview, setPreview] = useState(null);
+  // Establecer valores iniciales cuando el usuario esté disponible
+  useEffect(() => {
+    if (user) {
+      setValue('handle', user.handle || '');
+      setValue('descripcion', user.descripcion || '');
 
-  // Observa cambios en el input de imagen
+      // Si el usuario ya tiene imagen, mostrarla como preview
+      if (user.imagenUrl) {
+        setPreview(user.imagenUrl);
+      }
+    }
+  }, [user, setValue]);
+
+  // Previsualización de imagen
   const imageFile = watch('imagen');
 
-  // Actualiza la previsualización cada vez que el usuario elige un archivo
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       setPreview(URL.createObjectURL(file));
     }
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: any) => {
     console.log('Formulario enviado:', data);
-    // Aquí puedes procesar los datos, subir al backend, etc.
+    // Aquí puedes procesar el envío, por ejemplo:
+    // - Subir imagen
+    // - Llamar a API para actualizar el perfil
   };
 
   return (
@@ -47,18 +70,14 @@ const ProfileComponent = () => {
               <label className="form-label">Handle:</label>
               <input
                 type="text"
-                className={`form-control ${
-                  errors.handle ? 'is-invalid' : ''
-                }`}
+                className={`form-control ${errors.handle ? 'is-invalid' : ''}`}
                 placeholder="handle o Nombre de Usuario"
                 {...register('handle', {
                   required: 'Este campo es obligatorio',
                 })}
               />
               {errors.handle && (
-                <div className="invalid-feedback">
-                  {errors.handle.message}
-                </div>
+                <div className="invalid-feedback">{errors.handle.message}</div>
               )}
             </div>
 
@@ -66,15 +85,13 @@ const ProfileComponent = () => {
             <div className="mb-3">
               <label className="form-label">Descripción:</label>
               <textarea
-                className={`form-control ${
-                  errors.descripcion ? 'is-invalid' : ''
-                }`}
+                className={`form-control ${errors.descripcion ? 'is-invalid' : ''}`}
                 placeholder="Tu Descripción"
-                rows="3"
+                rows={3}
                 {...register('descripcion', {
                   required: 'La descripción es obligatoria',
                 })}
-              ></textarea>
+              />
               {errors.descripcion && (
                 <div className="invalid-feedback">
                   {errors.descripcion.message}
@@ -103,7 +120,7 @@ const ProfileComponent = () => {
           </form>
         </div>
 
-        {/* Vista previa */}
+        {/* Vista previa de imagen */}
         <div className="col-md-4 d-flex align-items-center justify-content-center mt-4 mt-md-0">
           {preview ? (
             <img

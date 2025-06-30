@@ -1,6 +1,7 @@
  
 import { isAxiosError } from "axios";
 import axiosInstance from "../config/axios";
+import type { UserSinPasswordFormData } from "../models/AuthsModel";
  
 class UserService {
  
@@ -9,7 +10,7 @@ class UserService {
     try {
       
      
-      const response = await axiosInstance.get(`/user` );
+      const response = await axiosInstance.get<UserSinPasswordFormData>(`/user` );
      return response.data; // Devuelve la respuesta del servidor
     } catch (error) {
         if (isAxiosError(error) && error.response) {
