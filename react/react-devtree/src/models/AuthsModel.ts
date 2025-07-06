@@ -17,3 +17,9 @@ export type UserSinPasswordFormData = Pick<
 > & {
   _id?: string; // Agrega el nuevo campo aquí
 };
+
+export type ProfileFormData  ={
+  handle: string;
+  description: string;
+  imagen: FileList | null;
+}

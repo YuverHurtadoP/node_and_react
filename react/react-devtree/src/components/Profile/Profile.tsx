@@ -1,7 +1,8 @@
-import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
-import { useUser } from '../../Context/UserContext';
-
+import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useUser } from "../../Context/UserContext";
+import type { ProfileFormData } from "../../models/AuthsModel";
+import userService from "../../services/UserService";
 const ProfileComponent = () => {
   const user = useUser();
   const [preview, setPreview] = useState<string | null>(null);
@@ -12,10 +13,10 @@ const ProfileComponent = () => {
     formState: { errors },
     watch,
     setValue,
-  } = useForm({
+  } = useForm<ProfileFormData>({
     defaultValues: {
-      handle: '',
-      descripcion: '',
+      handle: "",
+      description: "",
       imagen: null,
     },
   });
@@ -23,8 +24,8 @@ const ProfileComponent = () => {
   // Establecer valores iniciales cuando el usuario esté disponible
   useEffect(() => {
     if (user) {
-      setValue('handle', user.handle || '');
-      setValue('descripcion', user.descripcion || '');
+      setValue("handle", user.handle || "");
+      setValue("description", user.description || "");
 
       // Si el usuario ya tiene imagen, mostrarla como preview
       if (user.imagenUrl) {
@@ -34,20 +35,35 @@ const ProfileComponent = () => {
   }, [user, setValue]);
 
   // Previsualización de imagen
-  const imageFile = watch('imagen');
+  const imageFile = watch("imagen");
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file));
+  useEffect(() => {
+    if (imageFile && imageFile.length > 0) {
+      const objectUrl = URL.createObjectURL(imageFile[0]);
+      setPreview(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
     }
-  };
+  }, [imageFile]);
 
-  const onSubmit = (data: any) => {
-    console.log('Formulario enviado:', data);
-    // Aquí puedes procesar el envío, por ejemplo:
-    // - Subir imagen
-    // - Llamar a API para actualizar el perfil
+  const onSubmit = (data: ProfileFormData) => {
+    const formData = new FormData();
+    formData.append("handle", data.handle);
+    formData.append("description", data.description);
+    if (data.imagen && data.imagen[0]) {
+      formData.append("imagen", data.imagen[0]);
+    }
+    // Aquí puedes hacer la petición a la API
+    console.log("Formulario enviado:", data);
+    userService
+      .updatedUser(data)
+      .then((response) => {
+        // Manejar la respuesta de la API
+        console.log("Respuesta de la API:", response);
+      })
+      .catch((error) => {
+        // Manejar errores
+        console.error("Error:", error);
+      });
   };
 
   return (
@@ -57,9 +73,9 @@ const ProfileComponent = () => {
         <div
           className="col-md-6"
           style={{
-            backgroundColor: '#f9f9f9',
-            padding: '2rem',
-            borderRadius: '8px',
+            backgroundColor: "#f9f9f9",
+            padding: "2rem",
+            borderRadius: "8px",
           }}
         >
           <h5 className="text-center mb-4">Editar Información</h5>
@@ -67,13 +83,16 @@ const ProfileComponent = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* Handle */}
             <div className="mb-3">
-              <label className="form-label">Handle:</label>
+              <label htmlFor="handle" className="form-label">
+                Handle:
+              </label>
               <input
+                id="handle"
                 type="text"
-                className={`form-control ${errors.handle ? 'is-invalid' : ''}`}
+                className={`form-control ${errors.handle ? "is-invalid" : ""}`}
                 placeholder="handle o Nombre de Usuario"
-                {...register('handle', {
-                  required: 'Este campo es obligatorio',
+                {...register("handle", {
+                  required: "Este campo es obligatorio",
                 })}
               />
               {errors.handle && (
@@ -83,31 +102,38 @@ const ProfileComponent = () => {
 
             {/* Descripción */}
             <div className="mb-3">
-              <label className="form-label">Descripción:</label>
+              <label htmlFor="description" className="form-label">
+                Descripción:
+              </label>
               <textarea
-                className={`form-control ${errors.descripcion ? 'is-invalid' : ''}`}
+                id="description"
+                className={`form-control ${
+                  errors.description ? "is-invalid" : ""
+                }`}
                 placeholder="Tu Descripción"
                 rows={3}
-                {...register('descripcion', {
-                  required: 'La descripción es obligatoria',
+                {...register("description", {
+                  required: "La descripción es obligatoria",
                 })}
               />
-              {errors.descripcion && (
+              {errors.description && (
                 <div className="invalid-feedback">
-                  {errors.descripcion.message}
+                  {errors.description.message}
                 </div>
               )}
             </div>
 
             {/* Imagen */}
             <div className="mb-3">
-              <label className="form-label">Imagen:</label>
+              <label htmlFor="imagen" className="form-label">
+                Imagen:
+              </label>
               <input
+                id="imagen"
                 type="file"
                 className="form-control"
                 accept="image/*"
-                {...register('imagen')}
-                onChange={handleImageChange}
+                {...register("imagen")}
               />
             </div>
 
@@ -127,10 +153,10 @@ const ProfileComponent = () => {
               src={preview}
               alt="Previsualización"
               style={{
-                maxWidth: '100%',
-                maxHeight: '300px',
-                borderRadius: '8px',
-                objectFit: 'cover',
+                maxWidth: "100%",
+                maxHeight: "300px",
+                borderRadius: "8px",
+                objectFit: "cover",
               }}
             />
           ) : (
