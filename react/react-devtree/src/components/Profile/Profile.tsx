@@ -2,6 +2,9 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useUser } from "../../Context/UserContext";
 import type { ProfileFormData } from "../../models/AuthsModel";
+import { toast, ToastContainer } from "react-toastify";
+// .
+
 import userService from "../../services/UserService";
 const ProfileComponent = () => {
   const user = useUser();
@@ -58,16 +61,18 @@ const ProfileComponent = () => {
       .updatedUser(data)
       .then((response) => {
         // Manejar la respuesta de la API
-        console.log("Respuesta de la API:", response);
+             toast.success("Perfil actualizado correctamente");
+
       })
       .catch((error) => {
-        // Manejar errores
+        toast.error("Error al actualizar el perfil");
         console.error("Error:", error);
       });
   };
 
   return (
     <div className="container mt-5">
+       <ToastContainer />
       <div className="row justify-content-center">
         {/* Formulario */}
         <div
