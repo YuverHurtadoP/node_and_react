@@ -5,8 +5,10 @@ import type { UserFormData } from "../../models/AuthsModel";
 import AuthService from "../../services/AuthService";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const RegistrarUsuario = () => {
+   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -19,6 +21,9 @@ const RegistrarUsuario = () => {
       const result = await AuthService.registerUser(data);
       toast.success("Usuario registrado exitosamente");
       console.log("Respuesta del servidor:", result);
+        setTimeout(() => {
+      navigate("/auth/Login");
+    }, 2000);
     } catch (error) {
       
       toast.error(error?.response?.data.error);
@@ -31,7 +36,7 @@ const RegistrarUsuario = () => {
 
   return (
     <div className="min-vh-100 d-flex flex-column align-items-center">
-      <ToastContainer /> {/* Contenedor de Toast */}
+      <ToastContainer />  { }
       <div
         className="p-4 rounded-3 shadow mt-5"
         style={{ width: "400px", backgroundColor: "#eef3f7", color: "black" }}
