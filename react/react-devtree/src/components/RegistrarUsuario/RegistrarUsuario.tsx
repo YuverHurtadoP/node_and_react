@@ -36,7 +36,9 @@ const RegistrarUsuario = () => {
 
   return (
     <div className="min-vh-100 d-flex flex-column align-items-center">
-      <ToastContainer />  { }
+      <ToastContainer />  { 
+        
+      }
       <div
         className="p-4 rounded-3 shadow mt-5"
         style={{ width: "400px", backgroundColor: "#eef3f7", color: "black" }}

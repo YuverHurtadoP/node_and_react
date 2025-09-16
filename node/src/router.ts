@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createUser, getUser, login, updatedUser } from "./handlers";
+import { createUser, getUser, login, updatedUser, saveImg } from "./handlers";
 import {body}from "express-validator";
 import { handleInputError } from "./middlewere/validation";
 import { authMidleware } from "./middlewere/auth";
@@ -24,5 +24,5 @@ router.post('/auth/login',
  
    router.get('/user',authMidleware, getUser);
    router.patch('/user',authMidleware, updatedUser);
- 
+    router.post('/user/image',authMidleware, saveImg);
  export default router;

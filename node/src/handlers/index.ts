@@ -4,6 +4,8 @@ import { checkPassword, hashPassword } from "../utils/auth";
 import slugify from 'slugify';
 import { generateJwt } from "../utils/jwt";
 import Jwt, { decode } from "jsonwebtoken";
+import formidable from "formidable";
+import cloudinary from "../config/cloudinary";
 export const createUser = async (
   req: Request,
   res: Response
@@ -75,7 +77,7 @@ export const updatedUser = async (
   res: Response
 ): Promise<void> => {
   try {
-    const {description} = req.body
+    const { description } = req.body
 
     const handle = slugify(req.body.handle, {
       lower: true,
@@ -91,8 +93,46 @@ export const updatedUser = async (
     req.user.handle = handle;
     req.user.description = description;
     await req.user.save();
-   res.status(201).send("usuario actualizado con exito.");
+    res.status(201).send("usuario actualizado con exito.");
 
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "no se pudo actualizar el usuario" });
+  }
+
+};
+
+
+
+export const saveImg = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const form = formidable({ multiples: false });
+
+    form.parse(req, async (err, fields, files) => {
+      if (err) {
+        res.status(400).json({ error: "Error al procesar la imagen" });
+        return;
+      } else {
+
+        cloudinary.uploader.upload(files.file[0].filepath, {}, async (error, result) => {
+
+          if (error) {
+            res.status(500).json({ error: "Error al procesar la imagen" });
+            return;
+          } else {
+           // req.user.image = result.secure_url;
+ //           await req.user.save();
+            res.status(200).json({ message: "Imagen subida con exito", image: result.secure_url });
+          }
+
+        });
+      }
+
+    });
 
   } catch (error) {
     console.log(error);
