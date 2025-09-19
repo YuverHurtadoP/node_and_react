@@ -71,73 +71,82 @@ export const getUser = async (
   res.send(req.user);
 
 };
+ 
 
 export const updatedUser = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const { description } = req.body
-
-    const handle = slugify(req.body.handle, {
-      lower: true,
-      strict: true, // elimina caracteres especiales
-    });
-
-    const existHandle = await User.findOne({ handle });
-
-    if (existHandle && existHandle.email !== req.user.email) {
-      res.status(409).json({ error: "El nombre de usuario no esta disponible" });
-      return;
-    }
-    req.user.handle = handle;
-    req.user.description = description;
-    await req.user.save();
-    res.status(201).send("usuario actualizado con exito.");
-
-
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "no se pudo actualizar el usuario" });
-  }
-
-};
-
-
-
-export const saveImg = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const form = formidable({ multiples: false });
-
-    form.parse(req, async (err, fields, files) => {
-      if (err) {
-        res.status(400).json({ error: "Error al procesar la imagen" });
-        return;
-      } else {
-
-        cloudinary.uploader.upload(files.file[0].filepath, {}, async (error, result) => {
-
-          if (error) {
-            res.status(500).json({ error: "Error al procesar la imagen" });
-            return;
-          } else {
-           // req.user.image = result.secure_url;
- //           await req.user.save();
-            res.status(200).json({ message: "Imagen subida con exito", image: result.secure_url });
-          }
-
+    // Si la petición contiene archivos, procesar la imagen
+    if (req.headers['content-type']?.includes('multipart/form-data')) {
+      const form = formidable({ multiples: false });
+      form.parse(req, async (err, fields, files) => {
+        if (err) {
+          res.status(400).json({ error: "Error al procesar la imagen" });
+          return;
+        }
+        // Procesar campos de texto
+        const { handle: handleRaw, description } = fields;
+        const handleValue = Array.isArray(handleRaw) ? handleRaw[0] : handleRaw;
+        const handle = slugify(handleValue, {
+          lower: true,
+          strict: true,
         });
+
+        const existHandle = await User.findOne({ handle });
+        if (existHandle && existHandle.email !== req.user.email) {
+          res.status(409).json({ error: "El nombre de usuario no esta disponible" });
+          return;
+        }
+
+        req.user.handle = handle;
+        req.user.description = Array.isArray(description) ? description[0] : description;
+
+        // Procesar imagen si existe
+        const imageFile = files.file || files.imagen;
+        if (imageFile) {
+          cloudinary.uploader.upload(
+            (Array.isArray(imageFile) ? imageFile[0] : imageFile).filepath,
+            {folder: 'devtree'},
+            async (error, result) => {
+              if (error) {
+                res.status(500).json({ error: "Error al procesar la imagen" });
+                return;
+              }
+               
+              req.user.imagen = result.secure_url;
+              await req.user.save();
+              res.status(200).json({ message: "Usuario actualizado con éxito", image: result.secure_url });
+            }
+          );
+        } else {
+          await req.user.save();
+          res.status(200).json({ message: "Usuario actualizado con éxito" });
+        }
+      });
+    } else {
+      // Si no hay archivos, actualizar solo los campos de texto
+      const { handle: handleRaw, description } = req.body;
+      const handle = slugify(handleRaw, {
+        lower: true,
+        strict: true,
+      });
+
+      const existHandle = await User.findOne({ handle });
+      if (existHandle && existHandle.email !== req.user.email) {
+        res.status(409).json({ error: "El nombre de usuario no esta disponible" });
+        return;
       }
-
-    });
-
+      req.user.handle = handle;
+      req.user.description = description;
+      await req.user.save();
+      res.status(200).json({ message: "Usuario actualizado con éxito" });
+    }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "no se pudo actualizar el usuario" });
+    res.status(500).json({ error: "No se pudo actualizar el usuario" });
   }
-
 };
 
+ 

@@ -16,6 +16,7 @@ const ProfileComponent = () => {
     formState: { errors },
     watch,
     setValue,
+    resetField,
   } = useForm<ProfileFormData>({
     defaultValues: {
       handle: "",
@@ -31,8 +32,9 @@ const ProfileComponent = () => {
       setValue("description", user.description || "");
 
       // Si el usuario ya tiene imagen, mostrarla como preview
-      if (user.imagenUrl) {
-        setPreview(user.imagenUrl);
+      console.log("Usuario en useEffect:", user);
+      if (user.imagen) {
+        setPreview(user.imagen);
       }
     }
   }, [user, setValue]);
@@ -53,16 +55,16 @@ const ProfileComponent = () => {
     formData.append("handle", data.handle);
     formData.append("description", data.description);
     if (data.imagen && data.imagen[0]) {
-      formData.append("imagen", data.imagen[0]);
+      formData.append("file", data.imagen[0]);
     }
     // Aquí puedes hacer la petición a la API
     console.log("Formulario enviado:", data);
     userService
-      .updatedUser(data)
+      .updatedUser(formData)
       .then((response) => {
-        // Manejar la respuesta de la API
-             toast.success("Perfil actualizado correctamente");
-
+        toast.success("Perfil actualizado correctamente");
+           resetField("imagen");
+        
       })
       .catch((error) => {
         toast.error("Error al actualizar el perfil");
@@ -72,7 +74,7 @@ const ProfileComponent = () => {
 
   return (
     <div className="container mt-5">
-       <ToastContainer />
+      <ToastContainer />
       <div className="row justify-content-center">
         {/* Formulario */}
         <div
